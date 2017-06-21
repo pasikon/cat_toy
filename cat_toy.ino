@@ -1,5 +1,6 @@
 
 #include <Servo.h>
+#include <SoftwareSerial.h>
 
 
 // TONES  ==========================================
@@ -29,6 +30,8 @@ int buttonState = 0;         // variable for reading the pushbutton status
 
 Servo servo;
 Servo servoB;
+
+SoftwareSerial mySerial(9, 10); // RX, TX
 
 int servoAngle = 0;   // servo position in degrees
 
@@ -96,7 +99,7 @@ void loop() {
 
   buttonState = digitalRead(buttonPin);
   digitalWrite(laserPin, LOW);
-  
+
 
   if (buttonState == LOW) {
     // Set up a counter to pull from melody[] and beats[]
@@ -120,37 +123,72 @@ void loop() {
 
 }
 
+void servoStairs() {
+
+  for (servoAngle = 10; servoAngle < 70; servoAngle++) {
+    servo.write(servoAngle);
+    delay(70);
+  }
+  
+  delay(5000);
+
+  timesLeftRight(5, 10, 300);
+
+  for (servoAngle = 70; servoAngle > 10; servoAngle--) {
+    servo.write(servoAngle);
+    delay(70);
+  }
+ 
+}
+
+void timesLeftRight(int times, int degs, int delayy) {
+  int servoBAng = servoB.read();
+  for (int xox = 0; xox <= times; xox++) {
+    while (servoBAng > servoBAng - degs) {
+      delay(random(70, 300));
+      servoB.write(servoBAng);
+      servoBAng--;
+    }
+    while (servoBAng < servoBAng + degs) {
+      delay(random(70, 300));
+      servoB.write(servoBAng);
+      servoBAng++;
+    }
+    delay(2000);
+  }
+}
+
 void doServo()
 {
   //control the servo's direction and the position of the motor
 
-//  servo.write(45);      // Turn SG90 servo Left to 45 degrees
-//  servoB.write(45);
-//  delay(1000);          // Wait 1 second
-//  servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
-//  servoB.write(90);
-//  delay(1000);          // Wait 1 second
-//  servo.write(135);     // Turn SG90 servo Right to 135 degrees
-//  delay(1000);          // Wait 1 second
-//  servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
-//  delay(1000);
+  //  servo.write(45);      // Turn SG90 servo Left to 45 degrees
+  //  servoB.write(45);
+  //  delay(1000);          // Wait 1 second
+  //  servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
+  //  servoB.write(90);
+  //  delay(1000);          // Wait 1 second
+  //  servo.write(135);     // Turn SG90 servo Right to 135 degrees
+  //  delay(1000);          // Wait 1 second
+  //  servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
+  //  delay(1000);
 
   //end control the servo's direction and the position of the motor
 
 
   //control the servo's speed
 
-//  //if you change the delay value (from example change 50 to 10), the speed of the servo changes
+  //  //if you change the delay value (from example change 50 to 10), the speed of the servo changes
   for (servoAngle = 15; servoAngle < 120; servoAngle++) //move the micro servo from 0 degrees to 180 degrees
   {
     servo.write(servoAngle);
-    delay(50);
+    delay(70);
   }
-//
-//  for (servoAngle = 100; servoAngle > 0; servoAngle--) //now move back the micro servo from 0 degrees to 180 degrees
-//  {
-//    servo.write(servoAngle);
-//    delay(10);
-//  }
+  //
+  //  for (servoAngle = 100; servoAngle > 0; servoAngle--) //now move back the micro servo from 0 degrees to 180 degrees
+  //  {
+  //    servo.write(servoAngle);
+  //    delay(10);
+  //  }
   //end control the servo's speed
 }

@@ -31,7 +31,8 @@ int buttonState = 0;         // variable for reading the pushbutton status
 Servo servo;
 Servo servoB;
 
-SoftwareSerial mySerial(9, 10); // RX, TX
+SoftwareSerial espSerial(8, 9); // RX, TX
+String playMode = "auto";
 
 int servoAngle = 0;   // servo position in degrees
 
@@ -53,6 +54,7 @@ int rest_count = 100; //<-BLETCHEROUS HACK; See NOTES
 int tone_ = 0;
 int beat = 0;
 long duration  = 0;
+
 
 // PLAY TONE  ==============================================
 // Pulse the speaker to play a tone for a particular duration
@@ -91,6 +93,7 @@ void setup()
   digitalWrite(laserPin, LOW);
   digitalWrite(buzzerPin, HIGH);
 
+  espSerial.begin(9600);
 
 }
 
@@ -98,10 +101,16 @@ void setup()
 void loop() {
 
   buttonState = digitalRead(buttonPin);
-  digitalWrite(laserPin, LOW);
 
+  String espData = espSerial.readStringUntil('\n');
+  if (espData.indexOf("auto") != -1) {
+    digitalWrite(laserPin, LOW);
+    playMode = "auto";
+  } else if (espData.indexOf("manual") != -1) {
+    playMode = "manual";
+  }
 
-  if (buttonState == LOW) {
+  if (buttonState == LOW && playMode == "auto") {
     // Set up a counter to pull from melody[] and beats[]
     for (int i = 0; i < MAX_COUNT; i++) {
       tone_ = melody[i];
@@ -120,6 +129,20 @@ void loop() {
     digitalWrite(laserPin, LOW);
   }
 
+  if (playMode == "manual") {
+    digitalWrite(laserPin, HIGH);
+    String servoDo = espSerial.readStringUntil('\n');
+    if (servoDo.indexOf("left") != -1) {
+      left(10);
+    } else if (servoDo.indexOf("right") != -1) {
+      right(10);
+    } else if (servoDo.indexOf("up") != -1) {
+
+    } else if (servoDo.indexOf("down") != -1) {
+
+    }
+  }
+
 
 }
 
@@ -129,7 +152,7 @@ void servoStairs() {
     servo.write(servoAngle);
     delay(70);
   }
-  
+
   delay(5000);
 
   timesLeftRight(5, 10, 300);
@@ -138,23 +161,45 @@ void servoStairs() {
     servo.write(servoAngle);
     delay(70);
   }
- 
+
 }
 
 void timesLeftRight(int times, int degs, int delayy) {
   int servoBAng = servoB.read();
   for (int xox = 0; xox <= times; xox++) {
-    while (servoBAng > servoBAng - degs) {
+    int sb = servoBAng;
+    while (servoBAng > sb - degs) {
       delay(random(70, 300));
       servoB.write(servoBAng);
       servoBAng--;
     }
-    while (servoBAng < servoBAng + degs) {
+    sb = servoB.read();
+    while (servoBAng < sb + degs) {
       delay(random(70, 300));
       servoB.write(servoBAng);
       servoBAng++;
     }
     delay(2000);
+  }
+}
+
+void left(int degs) {
+  int servoBAng = servoB.read();
+  int sb = servoBAng;
+  while (servoBAng > sb - degs) {
+    delay(75);
+    servoB.write(servoBAng);
+    servoBAng--;
+  }
+}
+
+void right(int degs) {
+  int servoBAng = servoB.read();
+  int sb = servoBAng;
+  while (servoBAng < sb + degs) {
+    delay(75);
+    servoB.write(servoBAng);
+    servoBAng++;
   }
 }
 

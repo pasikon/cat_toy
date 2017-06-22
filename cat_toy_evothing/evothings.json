@@ -1,7 +1,7 @@
 {
   "name": "cat_toy_android",
   "version": "1.0.0",
-  "title": "Basic Template App",
+  "title": "Cat Toy",
   "description": "A basic template for a simple Evothings app.",
   "tags": [],
   "libraries": [
@@ -16,5 +16,8 @@
   "icon": "app-icon.png",
   "doc-url": "http://evothings.com/2.2/doc/examples/template-basic-app.html",
   "long-description": "A basic template for a simple Evothings app.",
-  "cordova-id": "com.evothings.examples.templatebasicapp"
+  "cordova-id": "com.evothings.examples.templatebasicapp",
+  "author-name": "Michal Zurek",
+  "author-email": "build@evothings.com",
+  "author-url": "https://evothings.com"
 }

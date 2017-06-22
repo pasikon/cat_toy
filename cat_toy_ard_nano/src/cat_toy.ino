@@ -103,6 +103,7 @@ void loop() {
   buttonState = digitalRead(buttonPin);
 
   String espData = espSerial.readStringUntil('\n');
+  Serial.println(espData);
   if (espData.indexOf("auto") != -1) {
     digitalWrite(laserPin, LOW);
     playMode = "auto";

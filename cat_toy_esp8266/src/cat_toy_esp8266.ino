@@ -15,14 +15,26 @@ void printWiFiStatus();
 void setup(void) {
   Serial.begin(9600);
 
+Serial.println("Hello!");
   // Configure GPIO2 as OUTPUT.
 
   //WiFiManager
   //Local intialization. Once its business is done, there is no need to keep it around
   WiFiManager wifiManager;
 
+  if (!wifiManager.autoConnect("AutoConnectAP", "password")) {
+   Serial.println("failed to connect, we should reset as see if it connects");
+   delay(3000);
+   ESP.reset();
+   delay(5000);
+ }
+
+printWiFiStatus();
+
   // Start TCP server.
   server.begin();
+
+
 }
 
 void loop(void) {

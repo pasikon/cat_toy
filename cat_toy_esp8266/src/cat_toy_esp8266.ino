@@ -47,13 +47,30 @@ void loop(void) {
     while (client.connected()) {
       if (client.available()) {
         char command = client.read();
-        if (command == 'H') {
+        // Serial.println(command);
+        if (command == 'M') {
           Serial.println("manual");
-          Serial.println("left");
+          // Serial.println("left");
+        }
+        else if (command == 'A') {
+          // digitalWrite(ledPin, LOW);
+          Serial.println("auto");
+        }
+        else if (command == 'U') {
+          // digitalWrite(ledPin, LOW);
+          Serial.println("up");
+        }
+        else if (command == 'D') {
+          // digitalWrite(ledPin, LOW);
+          Serial.println("down");
         }
         else if (command == 'L') {
           // digitalWrite(ledPin, LOW);
-          Serial.println("LED is now off.");
+          Serial.println("left");
+        }
+        else if (command == 'R') {
+          // digitalWrite(ledPin, LOW);
+          Serial.println("right");
         }
       }
     }

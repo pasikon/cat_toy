@@ -93,6 +93,7 @@ void setup()
   digitalWrite(laserPin, LOW);
   digitalWrite(buzzerPin, HIGH);
 
+  espSerial.setTimeout(100);
   espSerial.begin(9600);
 
 }
@@ -101,15 +102,19 @@ void setup()
 void loop() {
 
   buttonState = digitalRead(buttonPin);
+String espData = "";
 
-  String espData = espSerial.readStringUntil('\n');
-  Serial.println(espData);
-  if (espData.indexOf("auto") != -1) {
-    digitalWrite(laserPin, LOW);
-    playMode = "auto";
-  } else if (espData.indexOf("manual") != -1) {
-    playMode = "manual";
+  if (espSerial.available() > 0) {
+    espData = espSerial.readStringUntil('\n');
+    Serial.println(espData);
+    if (espData.indexOf("auto") != -1) {
+      digitalWrite(laserPin, LOW);
+      playMode = "auto";
+    } else if (espData.indexOf("manual") != -1) {
+      playMode = "manual";
+    }
   }
+
 
   if (buttonState == LOW && playMode == "auto") {
     // Set up a counter to pull from melody[] and beats[]
@@ -132,7 +137,8 @@ void loop() {
 
   if (playMode == "manual") {
     digitalWrite(laserPin, HIGH);
-    String servoDo = espSerial.readStringUntil('\n');
+    // String servoDo = espSerial.readStringUntil('\n');
+    String servoDo = espData;
     if (servoDo.indexOf("left") != -1) {
       left(10);
     } else if (servoDo.indexOf("right") != -1) {

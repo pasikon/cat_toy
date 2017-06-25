@@ -20,6 +20,22 @@ $(document).ready(function() {
 		app.connect()
 	})
 
+	$('#upButton').click(function() {
+		app.upF()
+	})
+	$('#downButton').click(function() {
+		app.downF()
+	})
+	$('#rightButton').click(function() {
+		app.rightF()
+	})
+	$('#leftButton').click(function() {
+		app.leftF()
+	})
+	$('#rstButton').click(function() {
+		app.rstF()
+	})	
+
 	$('#disconnectButton').click(function() {
 		app.disconnect()
 	})
@@ -98,7 +114,7 @@ app.sendString = function(sendString) {
 
 app.ledOn = function() {
 
-	app.sendString('H')
+	app.sendString('M')
 
 	$('#led').removeClass('ledOff').addClass('ledOn')
 
@@ -109,13 +125,29 @@ app.ledOn = function() {
 
 app.ledOff = function() {
 
-	app.sendString('L')
+	app.sendString('A')
 
 	$('#led').removeClass('ledOn').addClass('ledOff')
 
 	$('#led').unbind('click').click(function(){
 		app.ledOn()
 	})
+}
+
+app.upF = function() {
+	app.sendString('U')
+}
+app.downF = function() {
+	app.sendString('D')
+}
+app.leftF = function() {
+	app.sendString('L')
+}
+app.rightF = function() {
+	app.sendString('R')
+}
+app.rstF = function() {
+	app.sendString('X')
 }
 
 app.disconnect = function() {

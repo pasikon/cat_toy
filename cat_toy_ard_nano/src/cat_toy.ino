@@ -172,9 +172,9 @@ void servoStairs() {
 
         delay(5000);
 
-        timesLeftRight(5, 10, 300);
+        timesLeftRight(10, 10, 300);
 
-        for (servoAngle = 70; servoAngle > 10; servoAngle--) {
+        for (servoAngle = 70; servoAngle > 20; servoAngle--) {
                 servo.write(servoAngle);
                 delay(70);
         }

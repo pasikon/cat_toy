@@ -59,188 +59,218 @@ long duration  = 0;
 // PLAY TONE  ==============================================
 // Pulse the speaker to play a tone for a particular duration
 void playTone() {
-  long elapsed_time = 0;
-  if (tone_ > 0) { // if this isn't a Rest beat, while the tone has
-    //  played less long than 'duration', pulse speaker HIGH and LOW
-    while (elapsed_time < duration) {
+        long elapsed_time = 0;
+        if (tone_ > 0) { // if this isn't a Rest beat, while the tone has
+                //  played less long than 'duration', pulse speaker HIGH and LOW
+                while (elapsed_time < duration) {
 
-      digitalWrite(speakerOut, HIGH);
-      delayMicroseconds(tone_ / 2);
+                        digitalWrite(speakerOut, HIGH);
+                        delayMicroseconds(tone_ / 2);
 
-      // DOWN
-      digitalWrite(speakerOut, LOW);
-      delayMicroseconds(tone_ / 2);
+                        // DOWN
+                        digitalWrite(speakerOut, LOW);
+                        delayMicroseconds(tone_ / 2);
 
-      // Keep track of how long we pulsed
-      elapsed_time += (tone_);
-    }
-  }
-  else { // Rest beat; loop times delay
-    for (int j = 0; j < rest_count; j++) { // See NOTE on rest_count
-      delayMicroseconds(duration);
-    }
-  }
+                        // Keep track of how long we pulsed
+                        elapsed_time += (tone_);
+                }
+        }
+        else { // Rest beat; loop times delay
+                for (int j = 0; j < rest_count; j++) { // See NOTE on rest_count
+                        delayMicroseconds(duration);
+                }
+        }
 }
 
 void setup()
 {
-  Serial.begin(9600);
-  servo.attach(servoPin);
-  servoB.attach(servoPinB);
-  pinMode(buzzerPin, OUTPUT);
-  pinMode(laserPin, OUTPUT);
-  pinMode(buttonPin, INPUT);
-  digitalWrite(laserPin, LOW);
-  digitalWrite(buzzerPin, HIGH);
+        Serial.begin(9600);
 
-  espSerial.setTimeout(100);
-  espSerial.begin(9600);
+        pinMode(servoPin, OUTPUT);
+        pinMode(servoPinB, OUTPUT);
+        servo.attach(servoPin);
+        servoB.attach(servoPinB);
 
+        pinMode(buzzerPin, OUTPUT);
+        pinMode(laserPin, OUTPUT);
+        pinMode(buttonPin, INPUT);
+        digitalWrite(laserPin, LOW);
+        digitalWrite(buzzerPin, HIGH);
+
+        espSerial.setTimeout(100);
+        espSerial.begin(9600);
+
+        Serial.println("Servo def angle:" + servo.read());
+        Serial.println("ServoB def angle:" +servoB.read());
 }
 
 
 void loop() {
 
-  buttonState = digitalRead(buttonPin);
-String espData = "";
+        buttonState = digitalRead(buttonPin);
+        String espData = "";
 
-  if (espSerial.available() > 0) {
-    espData = espSerial.readStringUntil('\n');
-    Serial.println(espData);
-    if (espData.indexOf("auto") != -1) {
-      digitalWrite(laserPin, LOW);
-      playMode = "auto";
-    } else if (espData.indexOf("manual") != -1) {
-      playMode = "manual";
-    }
-  }
+        if (espSerial.available() > 0) {
+                espData = espSerial.readStringUntil('\n');
+                Serial.println(espData);
+                if (espData.indexOf("auto") != -1) {
+                        digitalWrite(laserPin, LOW);
+                        playMode = "auto";
+                } else if (espData.indexOf("manual") != -1) {
+                        playMode = "manual";
+                }
+        }
 
 
-  if (buttonState == LOW && playMode == "auto") {
-    // Set up a counter to pull from melody[] and beats[]
-    for (int i = 0; i < MAX_COUNT; i++) {
-      tone_ = melody[i];
-      beat = beats[i];
+        if (buttonState == LOW && playMode == "auto") {
+                // Set up a counter to pull from melody[] and beats[]
+                for (int i = 0; i < MAX_COUNT; i++) {
+                        tone_ = melody[i];
+                        beat = beats[i];
 
-      duration = beat * tempo; // Set up timing
+                        duration = beat * tempo; // Set up timing
 
-      playTone();
-      // A pause between notes...
-      delayMicroseconds(pause);
-    }
-    digitalWrite(buzzerPin, HIGH);
+                        playTone();
+                        // A pause between notes...
+                        delayMicroseconds(pause);
+                }
+                digitalWrite(buzzerPin, HIGH);
 
-    digitalWrite(laserPin, HIGH);
-    doServo();
-    digitalWrite(laserPin, LOW);
-  }
+                digitalWrite(laserPin, HIGH);
+                // doServo();
+                servoStairs();
+                digitalWrite(laserPin, LOW);
+        }
 
-  if (playMode == "manual") {
-    digitalWrite(laserPin, HIGH);
-    // String servoDo = espSerial.readStringUntil('\n');
-    String servoDo = espData;
-    if (servoDo.indexOf("left") != -1) {
-      left(10);
-    } else if (servoDo.indexOf("right") != -1) {
-      right(10);
-    } else if (servoDo.indexOf("up") != -1) {
-
-    } else if (servoDo.indexOf("down") != -1) {
-
-    }
-  }
+        if (playMode == "manual") {
+                digitalWrite(laserPin, HIGH);
+                // String servoDo = espSerial.readStringUntil('\n');
+                String servoDo = espData;
+                if (servoDo.indexOf("left") != -1) {
+                        left(10);
+                } else if (servoDo.indexOf("right") != -1) {
+                        right(10);
+                } else if (servoDo.indexOf("up") != -1) {
+                        up(10);
+                } else if (servoDo.indexOf("down") != -1) {
+                        down(10);
+                } else if (servoDo.indexOf("rst") != -1) {
+                        servo.write(45);
+                        servoB.write(45);
+                }
+        }
 
 
 }
 
 void servoStairs() {
 
-  for (servoAngle = 10; servoAngle < 70; servoAngle++) {
-    servo.write(servoAngle);
-    delay(70);
-  }
+        for (servoAngle = 10; servoAngle < 70; servoAngle++) {
+                servo.write(servoAngle);
+                delay(70);
+        }
 
-  delay(5000);
+        delay(5000);
 
-  timesLeftRight(5, 10, 300);
+        timesLeftRight(5, 10, 300);
 
-  for (servoAngle = 70; servoAngle > 10; servoAngle--) {
-    servo.write(servoAngle);
-    delay(70);
-  }
+        for (servoAngle = 70; servoAngle > 10; servoAngle--) {
+                servo.write(servoAngle);
+                delay(70);
+        }
 
 }
 
 void timesLeftRight(int times, int degs, int delayy) {
-  int servoBAng = servoB.read();
-  for (int xox = 0; xox <= times; xox++) {
-    int sb = servoBAng;
-    while (servoBAng > sb - degs) {
-      delay(random(70, 300));
-      servoB.write(servoBAng);
-      servoBAng--;
-    }
-    sb = servoB.read();
-    while (servoBAng < sb + degs) {
-      delay(random(70, 300));
-      servoB.write(servoBAng);
-      servoBAng++;
-    }
-    delay(2000);
-  }
-}
-
-void left(int degs) {
-  int servoBAng = servoB.read();
-  int sb = servoBAng;
-  while (servoBAng > sb - degs) {
-    delay(75);
-    servoB.write(servoBAng);
-    servoBAng--;
-  }
+        int servoBAng = servoB.read();
+        for (int xox = 0; xox <= times; xox++) {
+                int sb = servoBAng;
+                while (servoBAng > sb - degs) {
+                        delay(random(70, 300));
+                        servoB.write(servoBAng);
+                        servoBAng--;
+                }
+                sb = servoB.read();
+                while (servoBAng < sb + degs) {
+                        delay(random(70, 300));
+                        servoB.write(servoBAng);
+                        servoBAng++;
+                }
+                delay(2000);
+        }
 }
 
 void right(int degs) {
-  int servoBAng = servoB.read();
-  int sb = servoBAng;
-  while (servoBAng < sb + degs) {
-    delay(75);
-    servoB.write(servoBAng);
-    servoBAng++;
-  }
+        int servoBAng = servoB.read();
+        int sb = servoBAng;
+        while (servoBAng > sb - degs) {
+                delay(75);
+                servoB.write(servoBAng);
+                servoBAng--;
+        }
+}
+
+void left(int degs) {
+        int servoBAng = servoB.read();
+        int sb = servoBAng;
+        while (servoBAng < sb + degs) {
+                delay(75);
+                servoB.write(servoBAng);
+                servoBAng++;
+        }
+}
+
+void up(int degs) {
+        int servoAng = servo.read();
+        int sb = servoAng;
+        while (servoAng < sb + degs) {
+                delay(75);
+                servo.write(servoAng);
+                servoAng++;
+        }
+}
+
+void down(int degs) {
+        int servoAng = servo.read();
+        int sb = servoAng;
+        while (servoAng > sb - degs) {
+                delay(75);
+                servo.write(servoAng);
+                servoAng--;
+        }
 }
 
 void doServo()
 {
-  //control the servo's direction and the position of the motor
+        //control the servo's direction and the position of the motor
 
-  //  servo.write(45);      // Turn SG90 servo Left to 45 degrees
-  //  servoB.write(45);
-  //  delay(1000);          // Wait 1 second
-  //  servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
-  //  servoB.write(90);
-  //  delay(1000);          // Wait 1 second
-  //  servo.write(135);     // Turn SG90 servo Right to 135 degrees
-  //  delay(1000);          // Wait 1 second
-  //  servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
-  //  delay(1000);
+        //  servo.write(45);      // Turn SG90 servo Left to 45 degrees
+        //  servoB.write(45);
+        //  delay(1000);          // Wait 1 second
+        //  servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
+        //  servoB.write(90);
+        //  delay(1000);          // Wait 1 second
+        //  servo.write(135);     // Turn SG90 servo Right to 135 degrees
+        //  delay(1000);          // Wait 1 second
+        //  servo.write(90);      // Turn SG90 servo back to 90 degrees (center position)
+        //  delay(1000);
 
-  //end control the servo's direction and the position of the motor
+        //end control the servo's direction and the position of the motor
 
 
-  //control the servo's speed
+        //control the servo's speed
 
-  //  //if you change the delay value (from example change 50 to 10), the speed of the servo changes
-  for (servoAngle = 15; servoAngle < 120; servoAngle++) //move the micro servo from 0 degrees to 180 degrees
-  {
-    servo.write(servoAngle);
-    delay(70);
-  }
-  //
-  //  for (servoAngle = 100; servoAngle > 0; servoAngle--) //now move back the micro servo from 0 degrees to 180 degrees
-  //  {
-  //    servo.write(servoAngle);
-  //    delay(10);
-  //  }
-  //end control the servo's speed
+        //  //if you change the delay value (from example change 50 to 10), the speed of the servo changes
+        for (servoAngle = 15; servoAngle < 120; servoAngle++) //move the micro servo from 0 degrees to 180 degrees
+        {
+                servo.write(servoAngle);
+                delay(70);
+        }
+        //
+        //  for (servoAngle = 100; servoAngle > 0; servoAngle--) //now move back the micro servo from 0 degrees to 180 degrees
+        //  {
+        //    servo.write(servoAngle);
+        //    delay(10);
+        //  }
+        //end control the servo's speed
 }

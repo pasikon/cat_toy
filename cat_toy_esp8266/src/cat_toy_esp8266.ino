@@ -71,6 +71,9 @@ void loop(void) {
         else if (command == 'R') {
           // digitalWrite(ledPin, LOW);
           Serial.println("right");
+        } else if (command == 'X') {
+          // digitalWrite(ledPin, LOW);
+          Serial.println("rst");
         }
       }
     }

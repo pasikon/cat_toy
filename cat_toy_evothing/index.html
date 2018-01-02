@@ -3,114 +3,107 @@
 
 <head>
 
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, user-scalable=no,
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no,
 		shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
 
-	<title>Basic Template App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<style>
-		@import 'ui/css/evothings-app.css';
-		@import 'app.css';
-	</style>
 
-	<script>
-	// Redirect console.log to Evothings Workbench.
-	if (window.hyper && window.hyper.log) { console.log = hyper.log }
-	</script>
+    <title>Basic Template App</title>
 
-	<script src="cordova.js"></script>
-	<script src="libs/jquery/jquery.js"></script>
-	<script src="libs/evothings/evothings.js"></script>
-	<script src="libs/evothings/ui/ui.js"></script>
-	<script src="app.js"></script>
-	<!-- TODO: Add libraries that you need -->
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        @import 'ui/css/evothings-app.css';
+        @import 'app.css';
+
+    </style>
+
+    <script>
+        // Redirect console.log to Evothings Workbench.
+        if (window.hyper && window.hyper.log) {
+            console.log = hyper.log
+        }
+
+    </script>
+
+    <script src="cordova.js"></script>
+    <script src="libs/jquery/jquery.js"></script>
+    <script src="libs/evothings/evothings.js"></script>
+    <script src="libs/evothings/ui/ui.js"></script>
+    <script src="app.js"></script>
+
+    <!-- TODO: Add libraries that you need -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </head>
 
-<body ontouchstart=""><!-- ontouchstart="" enables low-delay CSS transitions. -->
+<body ontouchstart="">
 
-	<header>
-		<button class="back" onclick="history.back()">
-			<img src="ui/images/arrow-left.svg" />
-		</button>
+      <div class="container" id="startView">
 
-		<img class="logotype" src="ui/images/logo.svg" alt="Evothings" />
+            <div class="form-group">
+                <label for="IPAddress">ESP ip address</label>
+                <input type="text" class="form-control" id="IPAddress" value="192.168.1.37" type="url">
+            </div>
 
-		<!--<button class="menu" onclick=""><img src="ui/images/menu.svg" /></button>-->
-	</header>
+            <button id="connectButton" type="button" class="btn btn-primary"><span style="font-size:1.5em">CONNECT</span>
+            </button>
+      
+    </div> 
 
-	<h1>CAT TOY Advanced</h1>
+    <div id="connectingView">
+        <div id="connectingIndicator">
+            <img src="ui/images/lazy_cat.gif">
+            <p id="connectingStatus"></p>
+        </div>
+    </div>
 
-	<p>Control da CAT TOY</p>
+   <!--<div id="controlView" style="display:none">
 
-	<div id="startView">
+        <p>Turn on and off the led by clicking the circle.</p>
 
-		<img class="center" style="width:70%;padding: 25px 0px" src="img/esp8266.jpg">
+        <div id="ledView">
+            <div style="display:inline-block">
+                <div id="led" class="circleBase ledOff"></div>
+            </div>
+        </div>
 
-		<h2>Enter IP-address of the ESP8266</h2>
-
-		<input id="IPAddress" value="192.168.1.37" type="url">
-
-		<button id="connectButton" class="green wide"> Connect </button>
-
-	</div>
-
-	<div id="connectingView" style="display:none">
-
-		<div id="connectingIndicator">
-
-			<img src="img/loader.gif">
-			<p id="connectingStatus"></p>
-
-		</div>
-
-	</div>
-
-	<div id="controlView" style="display:none">
-
-
-		<p>Turn on and off the led by clicking the circle.</p>
-
-		<div id="ledView">
-			<div style="display:inline-block">
-				<div id="led" class="circleBase ledOff"></div>
-			</div>
-		</div>
-		
-		
-		
-      <div id="Buttonset1"><table width="200" border="0">
-  <tbody bgcolor="white">
-    <tr>
-      <td>&nbsp;</td>
-      <td><button id="upButton" class="wide black"> Up </button></td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td><button id="leftButton" class="wide black" > Left </button></td>
-      <td align="center"><button id="rstButton" class="red" > RST </button></td>
-      <td><button id="rightButton" class="wide black"> Right </button></td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td><button id="downButton" class="wide black"> Down </button></td>
-      <td>&nbsp;</td>
-    </tr>
-  </tbody>
-</table>
-
-       
+ 
         
-		
-		
-  </div>
-      <button id="disconnectButton" class="red wide"> Disconnect </button>
+    <div class="container">
+        <div class="controlCircle">
+            <div id="upButton" class="quarter verticalButton">
+            </div>
+            <div id="rightButton" class="quarter horizontalBtn"></div>
+            <div id="leftButton" class="quarter horizontalBtn"></div>
+            <div id="downButton" class="quarter verticalButton"></div>
+            <div class="cutout">
+                <div id="rstButton" class="reset">
+                    <span class="glyphicon glyphicon-screenshot"></span>
+                </div>
+            </div>
+        </div>
+        <div class="controlButtons">
+            <button id="disconnectButton" type="button" class="btn btn-danger">
+                <span style="font-size:2em">
+                FINISH</span>
+            </button>
+            <button id="autoButton" type="button" class="btn btn-default">
+                <span style="font-size:2em">
+                AUTO</span>
+            </button>
+        </div>
+    </div> -->
 
-	</div>
-<script type="text/javascript">
 
-</script>
+        <script type="text/javascript">
+
+
+        </script>
 </body>
 
 </html>
